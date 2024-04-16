@@ -10,99 +10,93 @@ To create a gallery control using android studio to display images or photos.
 Latest Version Android Studio
 
 ## ALGORITHM:
-1.Prepare Images: Gather the images you want to display in the gallery and store them in the res/drawable folder of your Android project.
+Prepare Images: Gather the images you want to display in the gallery and store them in the res/drawable folder of your Android project.
 
-2.Design Layout: Create the layout for the main activity (activity_main.xml). Include a Gallery widget to display the images and an ImageView to show the selected image.
+Design Layout: Create the layout for the main activity (activity_main.xml). Include a Gallery widget to display the images and an ImageView to show the selected image.
 
-3.Set up Adapter: Develop a custom adapter class (CustomizedGalleryAdapter.java) that extends BaseAdapter. Override necessary methods like getCount() and getView() to handle the gallery items and their display.
+Set up Adapter: Develop a custom adapter class (CustomizedGalleryAdapter.java) that extends BaseAdapter. Override necessary methods like getCount() and getView() to handle the gallery items and their display.
 
-4.Initialize Gallery: In the main activity (MainActivity.java), initialize the Gallery widget and set its adapter to the custom adapter you created.
+Initialize Gallery: In the main activity (MainActivity.java), initialize the Gallery widget and set its adapter to the custom adapter you created.
 
-5.Handle Item Selection: Implement functionality to respond when the user selects an image from the gallery. Update the ImageView with the selected image accordingly.
+Handle Item Selection: Implement functionality to respond when the user selects an image from the gallery. Update the ImageView with the selected image accordingly.
+
 
 ## PROGRAM:
 ```
+/*
 Program to print the text “GalleryControl”.
 Developed by: SOORYA R
 Registeration Number : 212221040158
+*/
 ```
+
 ## ACTIVITY_MAIN.XML
-```xml
+```XML
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:background="#fff"
+    android:orientation="vertical"
+    tools:context=".MainActivity"
+    android:id="@+id/main">
 
-    <Gallery
-        android:id="@+id/gallery"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.889" />
-
+    <!-- create a ImageView and Gallery -->
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@+id/gallery"
-        android:layout_centerHorizontal="true"
-        android:scaleType="fitCenter" />
+        android:layout_height="200dp"
+        android:scaleType="fitXY" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
+    <!-- By using android:spacing we can give spacing between images
+        android:animationDuration="3000" -> for animation running -->
+    <Gallery
+        android:id="@+id/languagesGallery"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-black"
-        android:text="Gallery View"
-        android:textColor="#673AB7"
-        android:textSize="24sp"
-        android:textStyle="italic"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.111" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_marginTop="100dp"
+        android:animationDuration="2000"
+        android:padding="10dp"
+        android:spacing="5dp"
+        android:unselectedAlpha="50" />
+</LinearLayout>
 ```
 
-## MainActivity.java
-```java
+## MAIN_ACTIVITY.JAVA
+```JAVA
 package com.example.galleryview;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.Gallery;
 import android.widget.ImageView;
+import androidx.appcompat.app.AppCompatActivity;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
 
-    private Integer[] mImageIds = {
-            R.drawable.josh_hutcherson,
-            R.drawable.boi_oh_boi,
-            R.drawable.chef_car,
-            R.drawable.coquette_rat,
-            R.drawable.flyingrainbowcar,
-            R.drawable.aot,
-            R.drawable.shiva,
-            R.drawable.rock,
-            R.drawable.guts,
-            R.drawable.detective_squarepants
+    Gallery simpleGallery;
+
+    // CustomizedGalleryAdapter is a java/kotlin
+    // class which extends BaseAdapter
+    // and implement the override methods.
+    CustomizedGalleryAdapter customGalleryAdapter;
+    ImageView selectedImageView;
+
+    // To show the selected language, we need this
+    // array of images, here taken 10 different kind of
+    // most popular programming languages
+    int[] images = {
+            R.drawable.circle,
+            R.drawable.dice,
+            R.drawable.genie,
+            R.drawable.pumpkin,
+            R.drawable.rocket,
+            R.drawable.circle,
+            R.drawable.dice,
+            R.drawable.genie,
+            R.drawable.pumpkin,
+            R.drawable.rocket
     };
 
     @Override
@@ -110,50 +104,32 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Gallery gallery = (Gallery) findViewById(R.id.gallery);
-        gallery.setAdapter(new ImageAdapter(this));
+        // Our layout is activity_main
+        // get the reference of Gallery. As we are showing
+        // languages it is named as languagesGallery
+        // meaningful names will be good for easier understanding
+        simpleGallery = (Gallery) findViewById(R.id.languagesGallery);
 
-        gallery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ImageView imageView = (ImageView) findViewById(R.id.imageView);
-                imageView.setImageResource(mImageIds[position]);
-            }
+        // get the reference of ImageView
+        selectedImageView = (ImageView) findViewById(R.id.imageView);
+
+        // initialize the adapter
+        customGalleryAdapter = new CustomizedGalleryAdapter(getApplicationContext(), images);
+
+        // set the adapter for gallery
+        simpleGallery.setAdapter(customGalleryAdapter);
+
+        // Let us do item click of gallery and image can be identified by its position
+        simpleGallery.setOnItemClickListener((parent, view, position, id) -> {
+            // Whichever image is clicked, that is set in the selectedImageView
+            // position will indicate the location of image
+            selectedImageView.setImageResource(images[position]);
         });
-    }
-
-    public class ImageAdapter extends BaseAdapter {
-        private Context mContext;
-
-        public ImageAdapter(Context c) {
-            mContext = c;
-        }
-
-        public int getCount() {
-            return mImageIds.length;
-        }
-
-        public Object getItem(int position) {
-            return null;
-        }
-
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ImageView imageView = new ImageView(mContext);
-            imageView.setImageResource(mImageIds[position]);
-            imageView.setLayoutParams(new Gallery.LayoutParams(150, 100));
-            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-            return imageView;
-        }
     }
 }
 ```
-
-## CustomizedGalleryAdapter.java
-```java
+## CustomizedGalleryAdapter.JAVA
+```JAVA
 package com.example.galleryview;
 
 import android.content.Context;
@@ -203,12 +179,10 @@ public class CustomizedGalleryAdapter extends BaseAdapter {
     }
 }
 ```
-
 ## OUTPUT
-![image](https://github.com/SudharsanamRK/gallerycontrol/assets/115523484/4f0ea48f-db51-448b-abce-56e3b957c320)
-![image](https://github.com/SudharsanamRK/gallerycontrol/assets/115523484/455f6311-d9e9-4a6f-914e-a9868aba1a6a)
-
-
+![Screenshot (456)](https://github.com/ArpanBardhan/gallerycontrol/assets/119405037/c538075c-2b94-445a-b309-b90cc6477eea)
+![Screenshot (457)](https://github.com/ArpanBardhan/gallerycontrol/assets/119405037/53082b47-b441-448b-aed4-1e9816b2e48f)
+![Screenshot (458)](https://github.com/ArpanBardhan/gallerycontrol/assets/119405037/5e619fd7-5e98-40ec-ae06-d24c15e0fba9)
 
 ## RESULT
 Thus a Simple Android Application to create a gallery control using android studio to display images or photos is developed and executed successfully.
